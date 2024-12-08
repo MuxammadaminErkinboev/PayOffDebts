@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Market Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Market Dashboard</h1>
+<form id="searchUserForm">
+    <label for="userSearch">Search User:</label>
+    <input type="text" id="userSearch" autocomplete="off">
+    <div id="suggestions"></div>
+</form>
+
+<h2>Give Debt</h2>
+<form action="/market/giveDebt" method="post">
+    <input type="hidden" id="selectedUserId" name="userId">
+    <label for="debtAmount">Debt Amount:</label>
+    <input type="number" id="debtAmount" name="amount" required>
+    <button type="submit">Give Debt</button>
+</form>
+
+<h2>User Debts</h2>
+<ul>
+    <li th:each="debt : ${debts}">
+        <span th:text="${debt.user.name} + ' - $' + ${debt.amount}"></span>
+    </li>
+</ul>
+
+<script>
+    $(document).ready(function () {
+        $("#userSearch").on("input", function () {
+            let query = $(this).val();
+            if (query.length > 2) {
+                $.ajax({
+                    url: "/market/searchUser",
+                    type: "GET",
+                    data: {query: query},
+                    success: function (response) {
+                        let suggestions = response.map(user => <div data-id="${user.id}" class="suggestion">${user.name}</div>);
+                        $("#suggestions").html(suggestions.join(''));
+                    }
+                });
+            } else {
+                $("#suggestions").empty();
+            }
+        });
+
+        $("#suggestions").on("click", ".suggestion", function () {
+            let userId = $(this).data("id");
+            let userName = $(this).text();
+            $("#userSearch").val(userName);
+            $("#selectedUserId").val(userId);
+            $("#suggestions").empty();
+        });
+    });
+</script>
+</body>
+</html>
