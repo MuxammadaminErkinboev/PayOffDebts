@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Super Admin Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Super Admin Dashboard</h1>
+<form action="/superadmin/addMarket" method="post">
+    <label for="marketName">Market Name:</label>
+    <input type="text" id="marketName" name="name" required>
+
+    <label for="marketPassword">Market Password:</label>
+    <input type="password" id="marketPassword" name="password" required>
+
+    <button type="submit">Add Market</button>
+</form>
+
+<h2>Market List</h2>
+<ul>
+    <li th:each="market : ${markets}">
+        <span th:text="${market.name}"></span>
+    </li>
+</ul>
+
+<h2>Total Debt</h2>
+<p th:text="'Total Debt: $' + ${totalDebt}"></p>
+</body>
+</html>
